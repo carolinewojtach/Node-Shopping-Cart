@@ -1,0 +1,6 @@
+[
+  { "id": 1, "username": "Jon", "password": "knownothing", "cart": [] },
+  { "id": 2, "username": "Arya", "password": "nottoday", "cart": [] },
+  { "id": 3, "username": "Daenerys", "password": "dracarys", "cart": [] },
+  { "id": 4, "username": "Cersei", "password": "shame", "cart": [] }
+]
