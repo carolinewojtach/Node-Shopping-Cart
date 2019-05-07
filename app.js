@@ -1,6 +1,6 @@
 const express = require("express");
 const productRouter = require("./product.router");
-const accessMiddleware = require("./accessMiddleware");
+const cartRouter = require("./cart.router");
 
 const app = express();
 
@@ -9,14 +9,15 @@ app.use(
     extended: true
   })
 );
-app.use(express.json());
-app.use(accessMiddleware);
-app.use(productRouter);
 
 app.get("/", (req, res) => {
   res.write("Welcome to our online store");
   res.end();
 });
+
+app.use(productRouter);
+app.use(cartRouter);
+
 app.listen(5000, () => {
   console.log("app started");
 });

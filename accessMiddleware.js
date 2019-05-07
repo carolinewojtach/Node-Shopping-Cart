@@ -1,23 +1,23 @@
 const fs = require("fs");
 
 const usersList = "users.json";
-let users = JSON.parse(fs.readFileSync(usersList, "utf8"));
+const users = JSON.parse(fs.readFileSync(usersList, "utf8"));
 
 const accessMiddleware = (req, res, next) => {
-  let username = req.headers["username"];
-  let password = req.headers["password"];
+  const username = req.headers["username"];
+  const password = req.headers["password"];
 
-  let user = users.find(u => u.username === username);
-  res.user = user;
+  const user = users.find(u => u.username === username);
 
   if (user) {
+    req.user = user;
     if (password === user.password) {
       next();
     } else {
-      res.status(401).send("bad password");
+      res.status(401).send("Wrong password");
     }
   } else {
-    res.status(401).send("user doesn't exist");
+    res.status(401).send("User doesn't exist");
   }
 };
 

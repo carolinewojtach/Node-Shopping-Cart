@@ -10,6 +10,7 @@ const saveToFile = () => {
   fs.writeFileSync(productsList, JSON.stringify(products));
 };
 
+router.all("*", express.json());
 // adres: http://localhost:5000/product/2
 router
   .route("/product/:id?")
@@ -25,36 +26,50 @@ router
   })
   // ADD NEW PRODUCT TO STORE
   .post((req, res) => {
-    const lastId = products.reduce((max, p) => (max < p.id ? p.id : max), 0);
-    const newProduct = {
-      id: lastId + 1,
-      ...req.body
-    };
-    products.push(newProduct);
-    saveToFile();
-    res.status(201).send(newProduct);
+    const { id } = req.params;
+    if (id) {
+      res.send("You don't have to pass id");
+    } else {
+      const lastId = products.reduce((max, p) => (max < p.id ? p.id : max), 0);
+      const newProduct = {
+        id: lastId + 1,
+        ...req.body
+      };
+      products.push(newProduct);
+      saveToFile();
+      res.status(201).send(`New product ${newProduct.name} added to the store`);
+    }
   })
   // DELETE PRODUCT FROM STORE
   .delete((req, res) => {
     const { id } = req.params;
-    products = products.filter(p => p.id !== +id);
-    saveToFile();
-    res.send();
+    if (id) {
+      const product = products.find(p => p.id === +id);
+      if (product) {
+        products = products.filter(p => p.id !== +id);
+        saveToFile();
+        res.status(201).send(`Product ${product.name} deleted from the store`);
+      } else res.status(404).send("There is no product with such id");
+    } else res.send("You have to pass product id to delete it");
   })
   // EDIT PRODUCT IN STORE
   .put((req, res) => {
     const { id } = req.params;
-    const productIndex = products.findIndex(p => p.id === +id);
-    if (productIndex === -1) {
-      return res.status(404).send();
-    }
-    const newProduct = {
-      id: +id,
-      ...req.body
-    };
-    products[productIndex] = newProduct;
-    saveToFile();
-    res.status(201).send(newProduct);
+    if (id) {
+      const productIndex = products.findIndex(p => p.id === +id);
+
+      if (productIndex !== -1) {
+        const newProduct = {
+          id: +id,
+          ...req.body
+        };
+        products[productIndex] = newProduct;
+        saveToFile();
+        res.status(201).send(`Product ${product.name} updated`);
+      } else {
+        return res.status(404).send("There is no product with such id");
+      }
+    } else res.send("You have to pass product id to edit it");
   });
 
 module.exports = router;
