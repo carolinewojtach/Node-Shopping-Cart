@@ -3,14 +3,14 @@ const fs = require("fs");
 const express = require("express");
 const router = express.Router();
 
-const accessMiddleware = require("./accessMiddleware");
+const accessAuth = require("./accessAuth");
 
 const usersList = "users.json";
 let users = JSON.parse(fs.readFileSync(usersList, "utf8"));
 const productsList = "products.json";
 let products = JSON.parse(fs.readFileSync(productsList, "utf8"));
 
-router.all("*", accessMiddleware);
+router.all("*", accessAuth);
 
 router
   .route("/cart/:product_id?/:p_amount?")

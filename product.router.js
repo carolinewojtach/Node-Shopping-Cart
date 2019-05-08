@@ -3,6 +3,7 @@ const fs = require("fs");
 const express = require("express");
 const router = express.Router();
 
+const accessAuth = require("./accessAuth");
 const productsList = "products.json";
 let products = JSON.parse(fs.readFileSync(productsList, "utf8"));
 
@@ -11,7 +12,7 @@ const saveToFile = () => {
 };
 
 router.all("*", express.json());
-// adres: http://localhost:5000/product/2
+
 router
   .route("/product/:id?")
   // SHOW ALL PRODUCTS
@@ -25,7 +26,7 @@ router
     }
   })
   // ADD NEW PRODUCT TO STORE
-  .post((req, res) => {
+  .post(accessAuth, (req, res) => {
     const { id } = req.params;
     if (id) {
       res.send("You don't have to pass id");
@@ -41,7 +42,7 @@ router
     }
   })
   // DELETE PRODUCT FROM STORE
-  .delete((req, res) => {
+  .delete(accessAuth, (req, res) => {
     const { id } = req.params;
     if (id) {
       const product = products.find(p => p.id === +id);
@@ -53,7 +54,7 @@ router
     } else res.send("You have to pass product id to delete it");
   })
   // EDIT PRODUCT IN STORE
-  .put((req, res) => {
+  .put(accessAuth, (req, res) => {
     const { id } = req.params;
     if (id) {
       const productIndex = products.findIndex(p => p.id === +id);
