@@ -1,15 +1,8 @@
-const fs = require("fs");
-
 const express = require("express");
 const router = express.Router();
 
 const accessAuth = require("./accessAuth");
-const productsList = "products.json";
-let products = JSON.parse(fs.readFileSync(productsList, "utf8"));
-
-const saveToFile = () => {
-  fs.writeFileSync(productsList, JSON.stringify(products));
-};
+const Product = require("./models/product.model");
 
 router.all("*", express.json());
 
@@ -26,19 +19,15 @@ router
     }
   })
   // ADD NEW PRODUCT TO STORE
-  .post(accessAuth, (req, res) => {
+  .post(accessAuth, async (req, res) => {
     const { id } = req.params;
     if (id) {
       res.send("You don't have to pass id");
     } else {
-      const lastId = products.reduce((max, p) => (max < p.id ? p.id : max), 0);
-      const newProduct = {
-        id: lastId + 1,
-        ...req.body
-      };
-      products.push(newProduct);
-      saveToFile();
-      res.status(201).send(`New product ${newProduct.name} added to the store`);
+      const product = new Product({ ...req.body });
+      await product.save();
+
+      res.status(201).send(`New product ${product.name} added to the store`);
     }
   })
   // DELETE PRODUCT FROM STORE

@@ -1,14 +1,8 @@
-const fs = require("fs");
-
 const express = require("express");
 const router = express.Router();
 
 const accessAuth = require("./accessAuth");
-
-const usersList = "users.json";
-let users = JSON.parse(fs.readFileSync(usersList, "utf8"));
-const productsList = "products.json";
-let products = JSON.parse(fs.readFileSync(productsList, "utf8"));
+const User = require("./models/user.model");
 
 router.all("*", accessAuth);
 
