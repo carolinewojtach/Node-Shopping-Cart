@@ -1,6 +1,14 @@
 const express = require("express");
-const productRouter = require("./product.router");
-const cartRouter = require("./cart.router");
+const productRouter = require("./routers/product.router");
+const cartRouter = require("./routers/cart.router");
+
+// mongoose connect
+const mongoose = require("mongoose");
+const mongooseSet = require("./mongooseSet");
+mongoose.connect(mongooseSet.url, mongooseSet.options);
+
+// const { firstDataInsert } = require("./firstDataInsert");
+// firstDataInsert();
 
 const app = express();
 

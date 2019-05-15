@@ -1,9 +1,9 @@
 [
-  { "id": 1, "name": "knight", "amount": 500 },
-  { "id": 2, "name": "archer", "amount": 1000 },
-  { "id": 3, "name": "foot soldier", "amount": 9000 },
-  { "id": 4, "name": "sellsword", "amount": 1000 },
-  { "id": 5, "name": "unsullied", "amount": 1500 },
-  { "id": 6, "name": "horse", "amount": 8000 },
-  { "id": 7, "name": "elephant", "amount": 800 }
+  { "name": "knight", "amount": 500 },
+  { "name": "archer", "amount": 1000 },
+  { "name": "foot soldier", "amount": 9000 },
+  { "name": "sellsword", "amount": 1000 },
+  { "name": "unsullied", "amount": 1500 },
+  { "name": "horse", "amount": 8000 },
+  { "name": "elephant", "amount": 800 }
 ]
