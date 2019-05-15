@@ -53,10 +53,16 @@ router
   .put(accessAuth, async (req, res) => {
     const { id } = req.params;
     if (id) {
-      Product.findByIdAndUpdate({ _id: `${id}` }, { ...req.body })
-        .then(res.send("Product updated"))
-        .catch(e => res.send("There is no product with such id"));
-    } else res.send("You have to pass product id to edit it");
+      await Product.findByIdAndUpdate(id, req.body, (error, result) => {
+        if (error) {
+          return res.status(500).send("There is no product with such id");
+        } else {
+          res.send("Product updated");
+        }
+      });
+    } else {
+      res.send("You have to pass product id to edit it");
+    }
   });
 
 module.exports = router;
