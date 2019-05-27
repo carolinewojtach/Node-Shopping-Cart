@@ -4,27 +4,43 @@ const router = express.Router();
 const accessAuth = require("../accessAuth");
 const User = require("../models/user.model");
 
-router.all("*", accessAuth);
+router.all("*", accessAuth, express.json());
 
 router
   .route("/cart/:product_id?/:p_amount?")
   // SHOW CART
-  .get((req, res) => {
+  .get(async (req, res) => {
     // user which is sign in
-    const user = req.user;
-    const { product_id } = req.params;
+    let { username } = req.user;
 
-    if (product_id) {
-      const product = user.cart.find(p => p.id === +product_id);
-      if (product) res.send(product);
-      else res.status(404).send("You don't have such product in your cart");
+    const id = req.params.product_id;
+    console.log("id: " + id);
+
+    if (id) {
+      await User.find({
+        username: username,
+        cart: { $elemMatch: { id: `${id}` } }
+      })
+        .then(r => console.log(r))
+        //.then(u => u.cart)
+        //.then(cart => cart.find(e => e.id === id))
+        .then(result => res.send(result))
+        //.catch(err  => res.send("You don't have such product in your cart"));
+        .catch(err => console.log(err));
     } else {
-      if (user.cart.length === 0) res.send("Your cart is empty");
-      else res.send(user.cart);
+      await User.find()
+        .then(result => res.send(result))
+        .then(result => console.log("2 " + result.name))
+        .then(result =>
+          result.length === 0
+            ? res.send("Your cart is empty")
+            : res.send(result)
+        )
+        .catch(err => res.send("Error, unable to get products"));
     }
   })
   // ADD PRODUCT TO CART
-  .post((req, res) => {
+  .post(async (req, res) => {
     let user = req.user;
     const { product_id, p_amount } = req.params;
 
@@ -85,7 +101,7 @@ router
     }
   })
   // DELETE PRODUCT FROM CART
-  .delete((req, res) => {
+  .delete(async (req, res) => {
     const user = req.user;
     const { product_id } = req.params;
 

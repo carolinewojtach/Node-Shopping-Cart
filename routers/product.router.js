@@ -5,11 +5,10 @@ const accessAuth = require("../accessAuth");
 const Product = require("../models/product.model");
 
 router.all("*", express.json());
-router.route;
 
 router
   .route("/product/:id?")
-  // SHOW ALL PRODUCTS
+  // SHOW ALL PRODUCTS OR ONE
   .get(async (req, res) => {
     const { id } = req.params;
     if (id) {
@@ -32,7 +31,7 @@ router
       product = new Product(req.body);
       await product
         .save()
-        .then(e =>
+        .then(result =>
           res.status(201).send(`New product ${product.name} added to the store`)
         )
         .catch(err => res.status(400).send("Error, unable to save product"));
@@ -46,7 +45,7 @@ router
         .then(result => {
           res.send(`Product deleted from the store`);
         })
-        .catch(e => res.send("There is no product with such id"));
+        .catch(err => res.send("There is no product with such id"));
     } else res.send("You have to pass product id to delete it");
   })
   // EDIT PRODUCT IN STORE
