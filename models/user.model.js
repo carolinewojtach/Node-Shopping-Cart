@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-module.exports = mongoose.model("user", {
-  id: Number,
+const userSchema = Schema({
+  _id: Schema.Types.ObjectId,
   username: String,
   password: String,
-  cart: [Object]
+  cart: [{ type: Schema.Types.ObjectId, ref: "Product" }]
 });
+
+module.exports = mongoose.model("user", userSchema);

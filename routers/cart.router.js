@@ -3,6 +3,7 @@ const router = express.Router();
 
 const accessAuth = require("../accessAuth");
 const User = require("../models/user.model");
+const Product = require("../models/product.model");
 
 router.all("*", accessAuth, express.json());
 
@@ -12,25 +13,17 @@ router
   .get(async (req, res) => {
     // user which is sign in
     let { username } = req.user;
+    const product_id = req.params.product_id;
 
-    const id = req.params.product_id;
-    console.log("id: " + id);
-
-    if (id) {
-      await User.find({
-        username: username,
-        cart: { $elemMatch: { id: `${id}` } }
+    if (product_id) {
+      await User.findOne({
+        username: username
+        // , cart: { $elemMatch: { id: product_id } }
       })
-        .then(r => console.log(r))
-        //.then(u => u.cart)
-        //.then(cart => cart.find(e => e.id === id))
-        .then(result => res.send(result))
-        //.catch(err  => res.send("You don't have such product in your cart"));
-        .catch(err => console.log(err));
+        .then(result => res.send(result.cart))
+        .catch(err => res.send("You don't have such product in your cart"));
     } else {
-      await User.find()
-        .then(result => res.send(result))
-        .then(result => console.log("2 " + result.name))
+      await User.find({ username: username })
         .then(result =>
           result.length === 0
             ? res.send("Your cart is empty")
@@ -42,60 +35,10 @@ router
   // ADD PRODUCT TO CART
   .post(async (req, res) => {
     let user = req.user;
-    const { product_id, p_amount } = req.params;
+    const { product_id, product_amount } = req.params;
 
     if (product_id) {
-      const product = products.find(p => p.id === +product_id);
-
-      if (+p_amount <= product.amount) {
-        const productLeft = {
-          id: product.id,
-          ...product,
-          amount: product.amount - +p_amount
-        };
-
-        // update cart
-        // check if such product is in cart already
-        let productInCart = user.cart.find(e => e.id === product.id);
-
-        if (productInCart) {
-          productInCart = {
-            id: product.id,
-            ...productInCart,
-            amount: productInCart.amount + +p_amount
-          };
-
-          const productInCartIndex = user.cart.findIndex(
-            p => p.id === product.id
-          );
-          user.cart[productInCartIndex] = productInCart;
-        } else {
-          productInCart = {
-            id: product.id,
-            ...product,
-            amount: +p_amount
-          };
-
-          user.cart.push(productInCart);
-        }
-
-        const userIndex = users.findIndex(u => u.id === user.id);
-        users[userIndex].cart = user.cart;
-        fs.writeFileSync(usersList, JSON.stringify(users));
-
-        // update amount of products left in store
-        const productIndex = products.findIndex(p => p.id === product.id);
-        products[productIndex] = productLeft;
-        fs.writeFileSync(productsList, JSON.stringify(products));
-
-        res
-          .status(201)
-          .send(`Product: ${productInCart.name} added to your cart`);
-      } else {
-        res
-          .status(401)
-          .send(`Only ${product.amount} items available in our store`);
-      }
+      await Product.findOne({ _id: product_id });
     } else {
       res.status(404).send("We don't have such a product in our store");
     }
@@ -106,31 +49,6 @@ router
     const { product_id } = req.params;
 
     if (product_id) {
-      const product = products.find(p => p.id === +product_id);
-      const productInCart = user.cart.find(p => p.id === +product_id);
-
-      if (productInCart) {
-        const productReturned = {
-          id: product.id,
-          ...product,
-          amount: product.amount + productInCart.amount
-        };
-
-        // update cart
-        user.cart = user.cart.filter(p => p.id !== +product_id);
-        const userIndex = users.findIndex(u => u.id === user.id);
-        users[userIndex] = user;
-        fs.writeFileSync(usersList, JSON.stringify(users));
-
-        // return products to store
-        const productIndex = products.findIndex(p => p.id === product.id);
-        products[productIndex] = productReturned;
-        fs.writeFileSync(productsList, JSON.stringify(products));
-
-        res
-          .status(201)
-          .send(`You deleted product: ${product.name} from your cart`);
-      } else res.status(404).send("You don't have such a product in your cart");
     } else {
       res
         .status(404)
