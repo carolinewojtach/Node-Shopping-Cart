@@ -7,17 +7,21 @@ const accessMiddleware = (req, res, next) => {
   const username = req.headers["username"];
   const password = req.headers["password"];
 
-  const user = users.find(u => u.username === username);
+  if (username) {
+    const user = users.find(u => u.username === username);
 
-  if (user) {
-    req.user = user;
-    if (password === user.password) {
-      next();
+    if (user) {
+      req.user = user; // to pass user to next()
+      if (password === user.password && username === user.username) {
+        next();
+      } else {
+        res.status(401).send("Wrong login or password");
+      }
     } else {
-      res.status(401).send("Wrong password");
+      res.status(401).send("User doesn't exist");
     }
   } else {
-    res.status(401).send("User doesn't exist");
+    res.send("Pass login")
   }
 };
 

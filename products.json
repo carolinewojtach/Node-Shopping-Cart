@@ -1,9 +1,50 @@
 [
-  { "id": 1, "name": "knight", "amount": 500 },
-  { "id": 2, "name": "archer", "amount": 1000 },
-  { "id": 3, "name": "foot soldier", "amount": 9000 },
-  { "id": 4, "name": "sellsword", "amount": 1000 },
-  { "id": 5, "name": "unsullied", "amount": 1500 },
-  { "id": 6, "name": "horse", "amount": 8000 },
-  { "id": 7, "name": "elephant", "amount": 800 }
+    {
+        "id": 1,
+        "name": "knight",
+        "amount": 500,
+        "price": 300
+    },
+    {
+        "id": 2,
+        "name": "archer",
+        "amount": 1000,
+        "price": 100
+    },
+    {
+        "id": 3,
+        "name": "foot soldier",
+        "amount": 9000,
+        "price": 60
+    },
+    {
+        "id": 4,
+        "name": "sellsword",
+        "amount": 975,
+        "price": 100
+    },
+    {
+        "id": 5,
+        "name": "unsullied",
+        "amount": 1500,
+        "price": 150
+    },
+    {
+        "id": 6,
+        "name": "horse",
+        "amount": 7970,
+        "price": 50
+    },
+    {
+        "id": 7,
+        "name": "elephant",
+        "amount": 800,
+        "price": 100
+    },
+    {
+        "id": 8,
+        "name": "dragon",
+        "amount": 400,
+        "price": 1000
+    }
 ]

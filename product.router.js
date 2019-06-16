@@ -66,7 +66,7 @@ router
         };
         products[productIndex] = newProduct;
         saveToFile();
-        res.status(201).send(`Product ${product.name} updated`);
+        res.status(201).send(`Product ${newProduct.name} updated`);
       } else {
         return res.status(404).send("There is no product with such id");
       }
